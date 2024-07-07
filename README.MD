@@ -52,11 +52,13 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 **Parking Lot Occupancy Detection**
 
 1. Navigate to the Parking Lot Occupancy Detection section .
+
 2. Select an image from the provided test images folder.
+
 3. The application will analyze the image and highlight the occupied and available parking spaces.
 
 ## Example Image
-![Parking Lot Occupancy Detection](C:\pycharm\pythonProject1\photos\2img.png)
+![Parking Lot Occupancy Detection](readmephotos/2img.png)
 
 **Vehicle Number Plate Detection**
 
@@ -67,6 +69,34 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 3. The application will process the image and display the detected number plate.
 
 ## Example Image
-![License Plate Recognition](C:\pycharm\pythonProject1\photos\3img.png)
+![License Plate Recognition](readmephotos/3img.png)
+
+## Features
+
+- **Vehicle Number Plate Detection:** Detects number plates from images of vehicles.
+
+- **Parking Lot Occupancy Detection:**  Identifies occupied and available parking spaces in parking lot images.
+
+- **Streamlit Interface:** Provides an intuitive web interface for uploading images and viewing results.
+
+## Tools Used
+
+**This project integrates the following tools and models:**
+
+- **YOLO Model:** Utilized for detecting cars in images.
+
+- **EasyOCR:** Implemented for recognizing text and numbers on license plates.
+
+- **CNN Model:** Used to detect parking lot occupancy from images.
+
+## Future Improvements
+
+**Potential future enhancements for this project include:**
+
+- **Real-Time Vehicle Detection:** Integrate real-time video feeds for dynamic vehicle number plate detection.
+
+- **Real-Time Parking Lot Management:** Implement real-time monitoring to optimize parking space usage.
+
+- **Scalability:** Extend the model to handle multiple parking lots simultaneously, suitable for larger-scale deployments.
 
 
