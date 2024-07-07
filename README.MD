@@ -1,1 +1,3 @@
 # Vehicle Number Plate and Parking Lot Occupancy Detection
+    Welcome to the Vehicle Number Plate and Parking Lot Occupancy Detection project documentation. This project utilizes computer vision techniques to detect vehicle number plates and analyze parking lot occupancy using image inputs. The application is built with Streamlit, providing a user-friendly interface for easy interaction with the detection models.
+    
