@@ -13,9 +13,9 @@ Welcome to the Vehicle Number Plate and Parking Lot Occupancy Detection project 
 
 **This project serves two main purposes:**
 
-1.**Vehicle Number Plate Detection:**This feature allows users to upload images of vehicles and extract the number plate information from them.
+1. **Vehicle Number Plate Detection:** This feature allows users to upload images of vehicles and extract the number plate information from them.
 
-2.**Parking Lot Occupancy Detection:**Users can also upload images of parking lots to determine which spaces are occupied and which are available. Please note that the current model is specifically trained for a particular parking space, but it can be adapted for other environments with additional training data.
+2. **Parking Lot Occupancy Detection:** Users can also upload images of parking lots to determine which spaces are occupied and which are available. Please note that the current model is specifically trained for a particular parking space, but it can be adapted for other environments with additional training data.
 
 The application is built using Streamlit, providing a user-friendly web interface for interacting with the detection models.
 
@@ -40,3 +40,33 @@ The application is built using Streamlit, providing a user-friendly web interfac
 ```bash
     pip install -r requirements.txt
 ```
+## Usage
+
+**To run the Streamlit application, use the following command:**
+
+```bash
+     streamlit run app.py
+```
+Once the app is running, open your web browser and go to [http://localhost:8501.](http://localhost:8501.)    
+
+**Parking Lot Occupancy Detection**
+
+1. Navigate to the Parking Lot Occupancy Detection section .
+2. Select an image from the provided test images folder.
+3. The application will analyze the image and highlight the occupied and available parking spaces.
+
+## Example Image
+![Parking Lot Occupancy Detection](C:\pycharm\pythonProject1\photos\2img.png)
+
+**Vehicle Number Plate Detection**
+
+1. Go to the Vehicle Number Plate Detection section in the app.
+
+2. Upload an image of the vehicle.
+
+3. The application will process the image and display the detected number plate.
+
+## Example Image
+![License Plate Recognition](C:\pycharm\pythonProject1\photos\3img.png)
+
+
