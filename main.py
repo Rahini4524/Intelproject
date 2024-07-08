@@ -37,7 +37,7 @@ class CNNet(nn.Module):
         return out
 
 
-model = torch.load("models/CNNmodel.pth")
+model = torch.load("models/CNNmodel.pth", map_location=device)
 
 model.eval()
 model.to(device)
