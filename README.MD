@@ -17,7 +17,7 @@ Welcome to the Vehicle Number Plate and Parking Lot Occupancy Detection project 
 
 2. **Parking Lot Occupancy Detection:** Users can also upload images of parking lots to determine which spaces are occupied and which are available. Please note that the current model is specifically trained for a particular parking space, but it can be adapted for other environments with additional training data.
 
-The application is built using Streamlit, providing a user-friendly web interface for interacting with the detection models.
+The application is built using Streamlit, providing a user-friendly web interface for interacting with the detection models. 
 
 ## Installation
 
@@ -26,7 +26,7 @@ The application is built using Streamlit, providing a user-friendly web interfac
 1.**Clone the repository:**
 
 ```bash
-    git clone https://github.com/your-username/your-repo-name.git
+    git clone https://github.com/Rahini4524/Intelproject.git
 ```
 
 2.**Navigate to the project directory:**
@@ -53,9 +53,9 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 
 1. Navigate to the Parking Lot Occupancy Detection section .
 
-2. Select an image from the provided test images folder.
+2. **Select an image from the cropped_images folder provided in the project.** These images are pre-processed to focus on the specific parking spaces for accurate occupancy detection.
 
-3. The application will analyze the image and highlight the occupied and available parking spaces.
+3. Click the **UPDATED STATUS** button to analyze the image and highlight the occupied and available parking spaces.
 
 ## Example Image
 ![Parking Lot Occupancy Detection](readmephotos/2img.png)
@@ -64,9 +64,9 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 
 1. Go to the Vehicle Number Plate Detection section in the app.
 
-2. Upload an image of the vehicle.
+2. Select an image from the **OCR_test** folder provided in the project or upload any car image. These images are prepared to facilitate the number plate detection and recognition process.
 
-3. The application will process the image and display the detected number plate.
+3. Click the **PREDICT NUMBER PLATE** button to process the image and display the detected number plate.
 
 ## Example Image
 ![License Plate Recognition](readmephotos/3img.png)

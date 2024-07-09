@@ -40,7 +40,7 @@ class CNNet(nn.Module):
 model = torch.load("models/CNNmodel.pth", map_location=device)
 
 model.eval()
-model.to(device)
+model.to(device)   
 
 def predict(images):
     return model(images.to(device))
@@ -127,7 +127,9 @@ def main():
     st.title("Image Processing App")
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-
+    st.markdown("""
+**Note:** Please select an image from the `cropped_images` folder. 
+""")
     if uploaded_file is not None:
         uploaded_file_path = save_uploaded_file(uploaded_file, "uploaded_files")
 
@@ -137,55 +139,65 @@ def main():
         st.write("**UPLOADED IMAGE**")
         bordered_image = ImageOps.expand(image, border=border_width, fill=border_color)
         st.image(bordered_image, use_column_width=True)
+        st.markdown("""
+                <style>
+                .stButton button {
+                    width: 600px;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+        if st.button("UPDATE STATUS"):
+            print(f"Uploaded File Path: {uploaded_file_path}")
+            result = process(uploaded_file_path)
 
-        print(f"Uploaded File Path: {uploaded_file_path}")
-        result = process(uploaded_file_path)
 
+            # Function to color the updated values
+            def color_cell(val):
+                if val == 'available':
+                    return 'color: green'
+                
+                elif val == 'occupied':
+                    return 'color: red'
+                else:
+                    return 'color: inherit'
 
-        # Function to color the updated values
-        def color_cell(val):
-            if val == 'available':
-                return 'color: green'
+            # Apply styles to the specific column
+            def apply_styles(df, column_name):
+                styled_df = df.style.applymap(color_cell, subset=[column_name])
+                return styled_df
+
+            # Get the styled DataFrames
+            styled_df1 = apply_styles(df1, 'status')
+            styled_df2 = apply_styles(df2, 'status')
             
-            elif val == 'occupied':
-                return 'color: red'
-            else:
-                return 'color: inherit'
+            for i in range(7):
+                
+                df1.loc[i,"status"] = "available" if result[i] == 0 else "occupied"
+                
+            for i, j in zip(range(7), range(7, 14)):
+                df2.loc[i,"status"] = "available" if result[j] == 0 else "occupied"
 
-        # Apply styles to the specific column
-        def apply_styles(df, column_name):
-            styled_df = df.style.applymap(color_cell, subset=[column_name])
-            return styled_df
+            # Display the styled DataFrames side by side using st.columns
+            col1, col2 = st.columns(2)
 
-        # Get the styled DataFrames
-        styled_df1 = apply_styles(df1, 'status')
-        styled_df2 = apply_styles(df2, 'status')
-        
-        for i in range(7):
-            
-            df1.loc[i,"status"] = "available" if result[i] == 0 else "occupied"
-            
-        for i, j in zip(range(7), range(7, 14)):
-            df2.loc[i,"status"] = "available" if result[j] == 0 else "occupied"
+            with col1:
+                st.write(styled_df1.to_html(escape=False), unsafe_allow_html=True)
 
-        # Display the styled DataFrames side by side using st.columns
-        col1, col2 = st.columns(2)
+            with col2:
+                st.write(styled_df2.to_html(escape=False), unsafe_allow_html=True)
 
-        with col1:
-            st.write(styled_df1.to_html(escape=False), unsafe_allow_html=True)
+            processed_image = Image.open(r"result.jpg")
 
-        with col2:
-            st.write(styled_df2.to_html(escape=False), unsafe_allow_html=True)
+            st.write("**PROCESSED IMAGE**")
+            border_width = 5
+            border_color = 'black'
+            bordered_image_1 = ImageOps.expand(processed_image, border=border_width, fill=border_color)
+            st.image(bordered_image_1, use_column_width=True)
 
-        processed_image = Image.open(r"result.jpg")
-
-        st.write("**PROCESSED IMAGE**")
-        border_width = 5
-        border_color = 'black'
-        bordered_image_1 = ImageOps.expand(processed_image, border=border_width, fill=border_color)
-        st.image(bordered_image_1, use_column_width=True)
-
-        st.title("licence plate recognition")
+        st.title("Number plate recognition")
+        st.markdown("""
+**Note:** Please select an image from the `ocr_test` folder or upload any car image. 
+""")
         uploaded_file_1 = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"],key="uploader2")\
         
         if uploaded_file_1 is not None:
@@ -198,22 +210,47 @@ def main():
             print(f"Uploaded File Path: {uploaded_file_path_2}")
         
             bounders = YoloPredict(uploaded_file_path_2)
-            
-            img = cv2.imread(uploaded_file_path_2)
-            res = []
-            for bounder in bounders:
-                for box in bounder.boxes:
-                    x1, y1, x2, y2 = map(int, box.xyxy[0])
-                    res.append(img[y1:y2, x1:x2])
-            st.title("Predicted License plates")
-            if res:
-                for crop_img in res:
-                    # print(get_text(crop_img))
-                    st.image(crop_img)
-                    for predictions in  get_text(crop_img):
-                        st.write(predictions[1], f"**[Percentage: {predictions[2]:.3f}]**")
-            else:
-                st.write("No License plate Detected!")
+            if st.button(" PREDICT NUMBER PLATE "):
+                img = cv2.imread(uploaded_file_path_2)
+                res = []
+                for bounder in bounders:
+                    for box in bounder.boxes:
+                        x1, y1, x2, y2 = map(int, box.xyxy[0])
+                        res.append(img[y1:y2, x1:x2])
+                st.title("Predicted Number plates")
+                if res:
+                    for crop_img in res:
+                        # print(get_text(crop_img))
+                        st.image(crop_img)
+                        for predictions in  get_text(crop_img):
+                            st.write(f"##[Percentage: {predictions[2]:.3f}]")
+                            detected_number_plate = predictions[1]
+
+                            st.markdown(f"""
+                                <style>
+                                .number-plate-box {{
+                                    border: 2px solid #4CAF50;
+                                    padding: 10px;
+                                    margin-top: 20px;
+                                    width: fit-content;
+                                    font-size: 20px;
+                                    font-family: Arial, sans-serif;
+                                    background-color: #f9f9f9;
+                                    border-radius: 5px;
+                                }}
+                                .number-plate-box strong {{
+                                    font-weight: bold;
+                                }}
+                                </style>
+                                """, unsafe_allow_html=True)
+
+                            st.markdown(f"""
+                                <div class="number-plate-box">
+                                    Detected Number Plate: <strong>{detected_number_plate}</strong>
+                                </div>
+                                """, unsafe_allow_html=True)
+                else:
+                    st.write("No License plate Detected!")
             
 if __name__ == "__main__":
     main()
