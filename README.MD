@@ -26,13 +26,13 @@ The application is built using Streamlit, providing a user-friendly web interfac
 1.**Clone the repository:**
 
 ```bash
-    git clone https://github.com/Rahini4524/projectintel.git
+    git clone https://github.com/Rahini4524/Intelproject.git
 ```
 
 2.**Navigate to the project directory:**
 
 ```bash
-    cd projectintel
+    cd Intelproject
 ```
 
 3.**Install the required packages:**
