@@ -159,8 +159,8 @@ def main():
                 }
                 </style>
             """, unsafe_allow_html=True)
-        html_button = '<button class="light-green-button" onClick="window.location.reload();">UPDATE STATUS</button>'
-        if st.markdown(html_button,unsafe_allow_html=True):
+        
+        if st.button("UPDATE STATUS"):
             print(f"Uploaded File Path: {uploaded_file_path}")
             result = process(uploaded_file_path)
             history = pd.read_csv("history.csv")
@@ -225,68 +225,68 @@ def main():
             st.title("Occupancy Analysis")
 
             st.pyplot(plt)
-        st.write("Frequently Accessed Plot Number: ", f"**{max_index}**")
-        st.write("Percentage:", f"{result_percent[max_index]}")
-        
-        st.title("Number plate recognition")
-        st.markdown("""
-**Note:** Please select an image from the `ocr_test` folder or upload any car image. 
-""")
-        uploaded_file_1 = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"],key="uploader2")\
-        
-        if uploaded_file_1 is not None:
-            uploaded_file_path_2 = save_uploaded_file(uploaded_file_1, "uploaded_files_2")
+            st.markdown(f"<span style='font-size:20px;'> <b>Frequently Accessed Plot Number:</b> {max_index+1}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:20px;'><b>Percentage:</b> {result_percent[max_index]:.2f}%</span>", unsafe_allow_html=True)
+            
+            st.title("Number plate recognition")
+            st.markdown("""
+    **Note:** Please select an image from the `ocr_test` folder or upload any car image. 
+    """)
+            uploaded_file_1 = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"],key="uploader2")\
+            
+            if uploaded_file_1 is not None:
+                uploaded_file_path_2 = save_uploaded_file(uploaded_file_1, "uploaded_files_2")
 
-            image = Image.open(uploaded_file_1)
-            st.write("**UPLOADED IMAGE**")
-            bordered_image = ImageOps.expand(image)
-            st.image(bordered_image)
-            print(f"Uploaded File Path: {uploaded_file_path_2}")
-        
-            bounders = YoloPredict(uploaded_file_path_2)
-            if st.button(" PREDICT NUMBER PLATE "):
-                img = cv2.imread(uploaded_file_path_2)
-                res = []
-                for bounder in bounders:
-                    for box in bounder.boxes:
-                        x1, y1, x2, y2 = map(int, box.xyxy[0])
-                        res.append(img[y1:y2, x1:x2])
-                st.title("Predicted Number plates")
-                if res:
-                    for crop_img in res:
-                        # print(get_text(crop_img))
-                        st.image(crop_img)
-                        for predictions in  get_text(crop_img):
-                            st.write(f"##[Percentage: {predictions[2]:.3f}]")
-                            detected_number_plate = predictions[1]
+                image = Image.open(uploaded_file_1)
+                st.write("**UPLOADED IMAGE**")
+                bordered_image = ImageOps.expand(image)
+                st.image(bordered_image)
+                print(f"Uploaded File Path: {uploaded_file_path_2}")
+            
+                bounders = YoloPredict(uploaded_file_path_2)
+                if st.button(" PREDICT NUMBER PLATE "):
+                    img = cv2.imread(uploaded_file_path_2)
+                    res = []
+                    for bounder in bounders:
+                        for box in bounder.boxes:
+                            x1, y1, x2, y2 = map(int, box.xyxy[0])
+                            res.append(img[y1:y2, x1:x2])
+                    st.title("Predicted Number plates")
+                    if res:
+                        for crop_img in res:
+                            # print(get_text(crop_img))
+                            st.image(crop_img)
+                            for predictions in  get_text(crop_img):
+                                st.write(f"##[Percentage: {predictions[2]:.3f}]")
+                                detected_number_plate = predictions[1]
 
-                            st.markdown(f"""
-                                <style>
-                                
-                                
-                                .number-plate-box {{
-                                    border: 2px solid #4CAF50;
-                                    padding: 10px;
-                                    margin-top: 20px;
-                                    width: fit-content;
-                                    font-size: 20px;
-                                    font-family: Arial, sans-serif;
-                                    background-color: #f9f9f9;
-                                    border-radius: 5px;
-                                }}
-                                .number-plate-box strong {{
-                                    font-weight: bold;
-                                }}
-                                </style>
-                                """, unsafe_allow_html=True)
+                                st.markdown(f"""
+                                    <style>
+                                    
+                                    
+                                    .number-plate-box {{
+                                        border: 2px solid #4CAF50;
+                                        padding: 10px;
+                                        margin-top: 20px;
+                                        width: fit-content;
+                                        font-size: 20px;
+                                        font-family: Arial, sans-serif;
+                                        background-color: #f9f9f9;
+                                        border-radius: 5px;
+                                    }}
+                                    .number-plate-box strong {{
+                                        font-weight: bold;
+                                    }}
+                                    </style>
+                                    """, unsafe_allow_html=True)
 
-                            st.markdown(f"""
-                                <div class="number-plate-box">
-                                    Detected Number Plate: <strong>{detected_number_plate}</strong>
-                                </div>
-                                """, unsafe_allow_html=True)
-                else:
-                    st.write("No License plate Detected!")
+                                st.markdown(f"""
+                                    <div class="number-plate-box">
+                                        Detected Number Plate: <strong>{detected_number_plate}</strong>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                    else:
+                        st.write("No License plate Detected!")
             
 if __name__ == "__main__":
     main()
