@@ -1,0 +1,19 @@
+/* style.css */
+button.light-green-button {
+    background-color: #2dd52d;
+    color: white;
+    border:none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button.light-green-button:hover {
+    background-color: #15de15;
+    border:none;
+}
+button.light-green-button:focus {
+    background-color: #229f22;
+    outline: none;
+}

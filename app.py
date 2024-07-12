@@ -14,7 +14,8 @@ import torch.optim as optim
 from typing import List
 from license_plate_bounder import YoloPredict
 from OCR import get_text
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -97,7 +98,14 @@ def process(image_path):
 
     cv2.imwrite("result.jpg", img)
     return result
-
+def to_percentage(values):
+    total = sum(values)
+    if total == 0:
+        # Avoid division by zero if the total sum is zero
+        return [0] * len(values)
+    
+    percentage_values = [(value / total) * 100 for value in values]
+    return percentage_values
 
 def save_uploaded_file(uploaded_file, save_dir):
         if not os.path.exists(save_dir):
@@ -123,6 +131,11 @@ def main():
     }
     df2 = pd.DataFrame(data2)
 
+    def local_css(file_name):
+        with open(file_name) as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+    local_css("style.css")
 
     st.title("Image Processing App")
 
@@ -146,10 +159,18 @@ def main():
                 }
                 </style>
             """, unsafe_allow_html=True)
-        if st.button("UPDATE STATUS"):
+        html_button = '<button class="light-green-button" onClick="window.location.reload();">UPDATE STATUS</button>'
+        if st.markdown(html_button,unsafe_allow_html=True):
             print(f"Uploaded File Path: {uploaded_file_path}")
             result = process(uploaded_file_path)
-
+            history = pd.read_csv("history.csv")
+            currentHistory = pd.DataFrame([result], columns=history.columns)
+            history = pd.concat([history, currentHistory],ignore_index=True)
+            history.to_csv("history.csv", index=False)
+            total =  history.sum(axis=0)
+            result_percent = to_percentage(result)
+            max_index = np.argmax(total.values)
+            ratio = to_percentage(total.values)
 
             # Function to color the updated values
             def color_cell(val):
@@ -191,9 +212,12 @@ def main():
             st.write("**PROCESSED IMAGE**")
             border_width = 5
             border_color = 'black'
-            bordered_image_1 = ImageOps.expand(processed_image, border=border_width, fill=border_color)
+            bordered_image_1 = ImageOps.expand(processed_image)
             st.image(bordered_image_1, use_column_width=True)
-
+            st.pyplot(plt)
+        st.write("Frequently Accessed Plot Number: ", max_index+1)
+        
+        st.write("Percentage:", f"{result_percent[max_index]}")
         st.title("Number plate recognition")
         st.markdown("""
 **Note:** Please select an image from the `ocr_test` folder or upload any car image. 
@@ -205,8 +229,8 @@ def main():
 
             image = Image.open(uploaded_file_1)
             st.write("**UPLOADED IMAGE**")
-            bordered_image = ImageOps.expand(image, border=border_width, fill=border_color)
-            st.image(bordered_image, use_column_width=True)
+            bordered_image = ImageOps.expand(image)
+            st.image(bordered_image)
             print(f"Uploaded File Path: {uploaded_file_path_2}")
         
             bounders = YoloPredict(uploaded_file_path_2)
@@ -228,6 +252,8 @@ def main():
 
                             st.markdown(f"""
                                 <style>
+                                
+                                
                                 .number-plate-box {{
                                     border: 2px solid #4CAF50;
                                     padding: 10px;
