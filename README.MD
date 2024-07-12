@@ -38,6 +38,7 @@ The application is built using Streamlit, providing a user-friendly web interfac
 3.**Install the required packages:**
 
 ```bash
+    pip install --ignore-installed PyYAML
     pip install -r requirements.txt
 ```
 ## Usage
