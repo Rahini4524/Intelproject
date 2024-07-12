@@ -6,3 +6,4 @@ streamlit
 pillow
 easyocr
 ultralytics
+streamlit_option_menu

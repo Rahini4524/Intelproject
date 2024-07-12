@@ -16,7 +16,7 @@ from license_plate_bounder import YoloPredict
 from OCR import get_text
 import numpy as np
 import matplotlib.pyplot as plt
-
+from streamlit_option_menu import option_menu
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class CNNet(nn.Module):
@@ -60,6 +60,12 @@ for item in root.findall('object'):
 
 test_image = glob.glob("Test Imagea/*.jpg")
 
+
+selected = option_menu(
+    options = ["Occupancy analysis", "Number plate analysis"],
+    orientation="horizontal",
+    menu_title=None,
+)
 
 def process(image_path):
     img = cv2.imread(image_path)
@@ -138,96 +144,105 @@ def main():
     local_css("style.css")
 
     st.title("Image Processing App")
+    if selected == "Occupancy analysis":
 
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-    st.markdown("""
-**Note:** **Please select an image from the `cropped_images` folder.** 
-""")
-    if uploaded_file is not None:
-        uploaded_file_path = save_uploaded_file(uploaded_file, "uploaded_files")
-
-        image = Image.open(uploaded_file)
-        border_width = 5
-        border_color = 'black'
-        st.write("**UPLOADED IMAGE**")
-        bordered_image = ImageOps.expand(image, border=border_width, fill=border_color)
-        st.image(bordered_image, use_column_width=True)
+        st.markdown("**Parking lot occupancy analysis**")
+        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
         st.markdown("""
-                <style>
-                .stButton button {
-                    width: 600px;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-        
-        if st.button("UPDATE STATUS"):
-            print(f"Uploaded File Path: {uploaded_file_path}")
-            result = process(uploaded_file_path)
-            history = pd.read_csv("history.csv")
-            currentHistory = pd.DataFrame([result], columns=history.columns)
-            history = pd.concat([history, currentHistory],ignore_index=True)
-            history.to_csv("history.csv", index=False)
-            total =  history.sum(axis=0)
-            result_percent = to_percentage(result)
-            max_index = np.argmax(total.values)
-            ratio = to_percentage(total.values)
+    **Note:** **Please select an image from the `cropped_images` folder.** 
+    """)
+        if uploaded_file is not None:
+            uploaded_file_path = save_uploaded_file(uploaded_file, "uploaded_files")
 
-            # Create a bar plot
-            plt.figure(figsize=(10, 5))
-            plt.bar(range(len(ratio)), ratio, color='blue')
-            plt.xlabel('Parking Plots')
-            plt.ylabel('Occupancy Ratio')
-            plt.title('Vehicle Movement Analysis')
-
-            # Function to color the updated values
-            def color_cell(val):
-                if val == 'available':
-                    return 'color: green'
-                
-                elif val == 'occupied':
-                    return 'color: red'
-                else:
-                    return 'color: inherit'
-
-            # Apply styles to the specific column
-            def apply_styles(df, column_name):
-                styled_df = df.style.applymap(color_cell, subset=[column_name])
-                return styled_df
-
-            # Get the styled DataFrames
-            styled_df1 = apply_styles(df1, 'status')
-            styled_df2 = apply_styles(df2, 'status')
-            
-            for i in range(7):
-                
-                df1.loc[i,"status"] = "available" if result[i] == 0 else "occupied"
-                
-            for i, j in zip(range(7), range(7, 14)):
-                df2.loc[i,"status"] = "available" if result[j] == 0 else "occupied"
-
-            # Display the styled DataFrames side by side using st.columns
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.write(styled_df1.to_html(escape=False), unsafe_allow_html=True)
-
-            with col2:
-                st.write(styled_df2.to_html(escape=False), unsafe_allow_html=True)
-
-            processed_image = Image.open(r"result.jpg")
-
-            st.write("**PROCESSED IMAGE**")
+            image = Image.open(uploaded_file)
             border_width = 5
             border_color = 'black'
-            bordered_image_1 = ImageOps.expand(processed_image)
-            st.image(bordered_image_1, use_column_width=True)
-
-            st.title("Occupancy Analysis")
-
-            st.pyplot(plt)
-            st.markdown(f"<span style='font-size:20px;'> <b>Frequently Accessed Plot Number:</b> {max_index+1}</span>", unsafe_allow_html=True)
-            st.markdown(f"<span style='font-size:20px;'><b>Percentage:</b> {result_percent[max_index]:.2f}%</span>", unsafe_allow_html=True)
+            st.write("**UPLOADED IMAGE**")
+            bordered_image = ImageOps.expand(image, border=border_width, fill=border_color)
+            st.image(bordered_image, use_column_width=True)
+            st.markdown("""
+                    <style>
+                    .stButton button {
+                        width: 600px;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
             
+            if st.button("click here for  update status"):
+                print(f"Uploaded File Path: {uploaded_file_path}")
+                result = process(uploaded_file_path)
+                history = pd.read_csv("history.csv")
+                currentHistory = pd.DataFrame([result], columns=history.columns)
+                history = pd.concat([history, currentHistory],ignore_index=True)
+                history.to_csv("history.csv", index=False)
+                total =  history.sum(axis=0)
+                result_percent = to_percentage(result)
+                max_index = np.argmax(total.values)
+                ratio = to_percentage(total.values)
+
+                # Create a bar plot
+                fig, ax = plt.subplots(figsize=(10, 5))
+                plt.bar(range(len(ratio)), ratio, color='green')
+                plt.xlabel('Parking Plots')
+                plt.ylabel('Occupancy Ratio (%)')
+                plt.title('Vehicle Movement Analysis')
+                
+
+                ax.set_xticks(range(len(ratio)))
+                ax.set_xticklabels(range(1, len(ratio) + 1))
+                
+                
+
+                # Function to color the updated values
+                def color_cell(val):
+                    if val == 'available':
+                        return 'color: green'
+                    
+                    elif val == 'occupied':
+                        return 'color: red'
+                    else:
+                        return 'color: inherit'
+
+                # Apply styles to the specific column
+                def apply_styles(df, column_name):
+                    styled_df = df.style.applymap(color_cell, subset=[column_name])
+                    return styled_df
+
+                # Get the styled DataFrames
+                styled_df1 = apply_styles(df1, 'status')
+                styled_df2 = apply_styles(df2, 'status')
+                
+                for i in range(7):
+                    
+                    df1.loc[i,"status"] = "available" if result[i] == 0 else "occupied"
+                    
+                for i, j in zip(range(7), range(7, 14)):
+                    df2.loc[i,"status"] = "available" if result[j] == 0 else "occupied"
+
+                # Display the styled DataFrames side by side using st.columns
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.write(styled_df1.to_html(escape=False), unsafe_allow_html=True)
+
+                with col2:
+                    st.write(styled_df2.to_html(escape=False), unsafe_allow_html=True)
+
+                processed_image = Image.open(r"result.jpg")
+
+                st.write("**PROCESSED IMAGE**")
+                border_width = 5
+                border_color = 'black'
+                bordered_image_1 = ImageOps.expand(processed_image)
+                st.image(bordered_image_1, use_column_width=True)
+
+                st.title("Occupancy Analysis")
+
+                
+                st.pyplot(fig)
+                st.markdown(f"<span style='font-size:20px;'> <b>Frequently Accessed Plot Number:</b> {max_index+1}</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:20px;'><b>Percentage:</b> {result_percent[max_index]:.2f}%</span>", unsafe_allow_html=True)
+    if selected == "Number plate analysis":     
             st.title("Number plate recognition")
             st.markdown("""
     **Note:** Please select an image from the `ocr_test` folder or upload any car image. 
@@ -244,7 +259,7 @@ def main():
                 print(f"Uploaded File Path: {uploaded_file_path_2}")
             
                 bounders = YoloPredict(uploaded_file_path_2)
-                if st.button(" PREDICT NUMBER PLATE "):
+                if st.button(" click here for predict number plate "):
                     img = cv2.imread(uploaded_file_path_2)
                     res = []
                     for bounder in bounders:
