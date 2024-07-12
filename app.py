@@ -242,6 +242,7 @@ def main():
                 st.pyplot(fig)
                 st.markdown(f"<span style='font-size:20px;'> <b>Frequently Accessed Plot Number:</b> {max_index+1}</span>", unsafe_allow_html=True)
                 st.markdown(f"<span style='font-size:20px;'><b>Percentage:</b> {result_percent[max_index]:.2f}%</span>", unsafe_allow_html=True)
+                st.write("**Go to the next slide (`Number plate analysis`) at the top: ⬆️**")
     if selected == "Number plate analysis":     
             st.title("Number plate recognition")
             st.markdown("""
