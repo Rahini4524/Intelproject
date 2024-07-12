@@ -32,7 +32,7 @@ The application is built using Streamlit, providing a user-friendly web interfac
 2.**Navigate to the project directory:**
 
 ```bash
-    cd your-repo-name
+    cd Intelproject
 ```
 
 3.**Install the required packages:**
@@ -53,7 +53,7 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 
 1. Navigate to the Parking Lot Occupancy Detection section .
 
-2. **Select an image from the cropped_images folder provided in the project.** These images are pre-processed to focus on the specific parking spaces for accurate occupancy detection.
+2. **Select an image from the `cropped_images` folder provided in the project.** These images are pre-processed to focus on the specific parking spaces for accurate occupancy detection.
 
 3. Click the **UPDATED STATUS** button to analyze the image and highlight the occupied and available parking spaces.
 
@@ -100,3 +100,5 @@ Once the app is running, open your web browser and go to [http://localhost:8501.
 - **Scalability:** Extend the model to handle multiple parking lots simultaneously, suitable for larger-scale deployments.
 
 
+## Important
+please select images from **cropped_images** folder for parking occupancy analysis

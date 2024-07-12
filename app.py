@@ -141,7 +141,7 @@ def main():
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
     st.markdown("""
-**Note:** Please select an image from the `cropped_images` folder. 
+**Note:** **Please select an image from the `cropped_images` folder.** 
 """)
     if uploaded_file is not None:
         uploaded_file_path = save_uploaded_file(uploaded_file, "uploaded_files")
@@ -171,6 +171,13 @@ def main():
             result_percent = to_percentage(result)
             max_index = np.argmax(total.values)
             ratio = to_percentage(total.values)
+
+            # Create a bar plot
+            plt.figure(figsize=(10, 5))
+            plt.bar(range(len(ratio)), ratio, color='blue')
+            plt.xlabel('Parking Plots')
+            plt.ylabel('Occupancy Ratio')
+            plt.title('Vehicle Movement Analysis')
 
             # Function to color the updated values
             def color_cell(val):
@@ -214,10 +221,13 @@ def main():
             border_color = 'black'
             bordered_image_1 = ImageOps.expand(processed_image)
             st.image(bordered_image_1, use_column_width=True)
+
+            st.title("Occupancy Analysis")
+
             st.pyplot(plt)
-        st.write("Frequently Accessed Plot Number: ", max_index+1)
-        
+        st.write("Frequently Accessed Plot Number: ", f"**{max_index}**")
         st.write("Percentage:", f"{result_percent[max_index]}")
+        
         st.title("Number plate recognition")
         st.markdown("""
 **Note:** Please select an image from the `ocr_test` folder or upload any car image. 
