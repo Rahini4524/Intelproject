@@ -9,5 +9,5 @@ ultralytics==8.2.55
 streamlit_option_menu
 psutil==6.0.0
 pandas==2.2.2
-
+dill-0.3.8
 
