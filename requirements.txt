@@ -7,4 +7,4 @@ pillow
 easyocr
 ultralytics
 streamlit_option_menu
-pip install psutil==6.0.0
+psutil==6.0.0
