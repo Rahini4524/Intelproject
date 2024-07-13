@@ -1,4 +1,4 @@
-opencv-python==4.10.0
+opencv-python==4.9.0.80
 torch --index-url https://download.pytorch.org/whl/cu118
 torchvision --index-url https://download.pytorch.org/whl/cu118
 torchaudio --index-url https://download.pytorch.org/whl/cu118
@@ -9,4 +9,5 @@ ultralytics==8.2.55
 streamlit_option_menu
 psutil==6.0.0
 pandas==2.2.2
+
 
