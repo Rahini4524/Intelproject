@@ -47,7 +47,7 @@ def predict(images):
     return model(images.to(device))
 
 
-tree = ET.parse('annotations\02376171-6ec8-48bd-80f7-718e9a9137db.xml')
+tree = ET.parse('annotations/02376171-6ec8-48bd-80f7-718e9a9137db.xml')
 root = tree.getroot()
 bound_boxes = []
 for item in root.findall('object'):
